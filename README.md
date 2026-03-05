@@ -1,6 +1,6 @@
-# Get On Board UCB - Frontend 
+<img width="885" height="183" alt="Colorful Community Logo" src="https://github.com/user-attachments/assets/111053c7-d317-4c8e-950a-4e57a51b3ba0" />
 
-![Logo]()
+# Get On Board UCB - Frontend 
 
 Plataforma de conexión laboral para estudiantes y graduados de la UCB. Enfocada en una experiencia de usuario fluida para la búsqueda de pasantías y vacantes.
 
