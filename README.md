@@ -4,7 +4,7 @@
 
 Plataforma de conexión laboral para estudiantes y graduados de la UCB. Enfocada en una experiencia de usuario fluida para la búsqueda de pasantías y vacantes.
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - **Framework:** [Next.js](https://nextjs.org/)
 - **Library:** [React](https://reactjs.org/)
@@ -35,3 +35,5 @@ Seguimos el modelo de ramas de **GitHub Flow**:
 3. Ejecutar en modo desarrollo:
    ```bash
    npm run dev
+
+---
