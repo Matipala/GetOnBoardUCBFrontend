@@ -36,4 +36,28 @@ Seguimos el modelo de ramas de **GitHub Flow**:
    ```bash
    npm run dev
 
+## Biome
+1. Instalar dependencia de Biome:
+   ```bash
+   npm install --save-dev --save-exact @biomejs/biome
+
+2. Sino se creo el archivo Biome.json:
+   ```bash
+   npx @biomejs/biome init
+
+3. Antes de hacer un Commit: **antes de querer guardar cambios en git, esto es una excelente para escanear el codigo, por si dejaste una variable sin usar en un archivo que cerraste sin guardar, este codigo lo detectara, lo arreglara si puede o te avisara para que lo corrijas antes de subir el codigo**
+   
+   ```bash
+   npm run check
+
+4. Cuando agregas muchos archivos de golpe: **este recorre todos los archivos del proyecto en milisegundos y los dejara impecables y estandarizados**
+   
+   ```bash
+   npm run format
+
+5. Para buscar errores fantasmas: **esto revisara todos los archivos en busca de errores de logica de react o nextjs que quizas te pasaron por alto en archivos que no tienes abiertos en ese momento**
+   
+   ```bash
+   npm run lint
+
 ---
