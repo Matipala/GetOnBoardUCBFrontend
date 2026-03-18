@@ -1,6 +1,38 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useAuth } from "@/hooks/UseAuth";
+import type { UserRole } from "@/lib/types";
+
+const ROLE_REDIRECT: Record<UserRole, string> = {
+    admin: "/admin",
+    student: "/student",
+    employer: "/employer",
+    coordinator: "/coordinator",
+};
+
 
 export default function LoginPage() {
+    const router = useRouter();
+    const { login, isLoading, error } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        await login(email, password);
+
+        const savedUser = localStorage.getItem("auth_user");
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            router.push(ROLE_REDIRECT[user.role as UserRole]);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-ucb-blue flex items-center justify-center p-4">
             <div className="w-full max-w-md">
