@@ -5,6 +5,9 @@ import { usePathname } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { navItems, roleLabels } from "@/lib/navigation";
 import { UserRole } from "@/lib/types";
+import { useAuth } from "@/hooks/UseAuth";
+import { useRouter } from "next/navigation";
+
 
 
 interface SicebarProps {
@@ -14,6 +17,14 @@ interface SicebarProps {
 export function Sidebar({ role }: SicebarProps) {
     const pathname = usePathname();
     const items = navItems[role];
+
+    const { logout } = useAuth();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        await logout();
+        router.push("/login");
+    };
 
     return (
         <aside className="flex flex-col w-64 min-h-screen bg-ucb-blue text-white shrink-0">
@@ -53,6 +64,7 @@ export function Sidebar({ role }: SicebarProps) {
             <div className="px-3 pb-6 pt-4 border-t border-white/10">
                 <button
                     type="button"
+                    onClick={handleLogout}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/50 hover:bg-white/10 hover:text-white transition-colors w-full"
                 >
                     <LogOut size={18} strokeWidth={1.75} />
