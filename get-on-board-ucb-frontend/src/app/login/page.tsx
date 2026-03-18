@@ -44,7 +44,7 @@ export default function LoginPage() {
                     <h1 className="text-2xl font-bold text-gray-900 mb-1">Iniciar sesión</h1>
                     <p className="text-gray-500 text-sm mb-6">Ingresa con tu cuenta UCB</p>
 
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
                                 Correo electrónico
@@ -52,7 +52,11 @@ export default function LoginPage() {
                             <input
                                 type="email"
                                 placeholder="usuario@ucb.edu.bo"
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                disabled={isLoading}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent disabled:opacity-50"
                             />
                         </div>
                         <div>
@@ -62,14 +66,37 @@ export default function LoginPage() {
                             <input
                                 type="password"
                                 placeholder="••••••••"
-                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                disabled={isLoading}
+                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent disabled:opacity-50"
                             />
                         </div>
+
+                        {/* Mensaje de error */}
+                        {error && (
+                            <p className="text-red-500 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+                                {error}
+                            </p>
+                        )}
+
                         <button
                             type="submit"
-                            className="w-full bg-blue-950 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-900 transition-colors mt-2"
+                            disabled={isLoading}
+                            className="w-full bg-blue-950 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-900 transition-colors mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                         >
-                            Entrar
+                            {isLoading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                    </svg>
+                                    Entrando...
+                                </span>
+                            ) : (
+                                "Entrar"
+                            )}
                         </button>
                     </form>
                 </div>
@@ -80,6 +107,6 @@ export default function LoginPage() {
                     </Link>
                 </p>
             </div>
-        </div >
+        </div>
     );
 }
