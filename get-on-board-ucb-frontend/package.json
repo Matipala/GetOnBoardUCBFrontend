@@ -9,7 +9,7 @@
     "lint": "biome check ./src",
     "lint:fix": "biome check --write ./src",
     "format": "biome format --write",
-    "prepare": "husky"
+    "prepare": "cd .. && husky ./get-on-board-ucb-frontend/.husky"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

@@ -10,7 +10,13 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <Image src="/2.png" alt="UCB Logo" className="w-50 h-auto" width={100} height={100} />
+            <Image
+              src="/2.png"
+              alt="UCB Logo"
+              className="w-50 h-auto"
+              width={100}
+              height={100}
+            />
           </div>
           <Link
             href="/login"

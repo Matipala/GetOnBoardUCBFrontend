@@ -1,1 +1,1 @@
-npx lint-staged
+cd get-on-board-ucb-frontend && npx lint-staged
