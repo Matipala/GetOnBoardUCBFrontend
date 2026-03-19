@@ -42,6 +42,8 @@ export default function LoginPage() {
             src="/1.png"
             alt="Get On Board UCB"
             className="h-70 rounded-lg"
+            width={300}
+            height={100}
           />
         </div>
         <div className="bg-white rounded-2xl border border-gray-200 p-8">
