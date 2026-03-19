@@ -1,33 +1,43 @@
-import { Briefcase, Building2, ClipboardList, Users } from "lucide-react";
+"use client";
 
-const stats = [
-  {
-    label: "Ofertas publicadas",
-    value: "—",
-    icon: Briefcase,
-    color: "bg-green-50 text-green-600",
-  },
-  {
-    label: "Total candidatos",
-    value: "—",
-    icon: Users,
-    color: "bg-blue-50 text-blue-600",
-  },
-  {
-    label: "Postulaciones activas",
-    value: "—",
-    icon: ClipboardList,
-    color: "bg-amber-50 text-amber-600",
-  },
-  {
-    label: "Mi empresa",
-    value: "—",
-    icon: Building2,
-    color: "bg-purple-50 text-purple-600",
-  },
-];
+import { Briefcase, ClipboardList, Users } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchCount = (endpoint: string) =>
+  fetch(`http://localhost:3001/${endpoint}`).then((r) => r.json());
 
 export default function EmployerPage() {
+  const { data: offers } = useQuery<unknown[]>({
+    queryKey: ["offers"],
+    queryFn: () => fetchCount("offers"),
+  });
+
+  const { data: applications } = useQuery<unknown[]>({
+    queryKey: ["applications"],
+    queryFn: () => fetchCount("applications"),
+  });
+
+  const stats = [
+    {
+      label: "Ofertas publicadas",
+      value: offers?.length ?? "—",
+      icon: Briefcase,
+      color: "bg-green-50 text-green-600",
+    },
+    {
+      label: "Total candidatos",
+      value: applications?.length ?? "—",
+      icon: Users,
+      color: "bg-blue-50 text-blue-600",
+    },
+    {
+      label: "Postulaciones activas",
+      value: applications?.length ?? "—",
+      icon: ClipboardList,
+      color: "bg-amber-50 text-amber-600",
+    },
+  ];
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-1">
@@ -37,7 +47,7 @@ export default function EmployerPage() {
         Gestiona tus ofertas y candidatos.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (

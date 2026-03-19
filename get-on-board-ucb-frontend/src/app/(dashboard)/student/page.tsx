@@ -1,33 +1,55 @@
-import { Bell, Briefcase, ClipboardList, GraduationCap } from "lucide-react";
+"use client";
 
-const stats = [
-  {
-    label: "Ofertas disponibles",
-    value: "—",
-    icon: Briefcase,
-    color: "bg-blue-50 text-blue-600",
-  },
-  {
-    label: "Mis postulaciones",
-    value: "—",
-    icon: ClipboardList,
-    color: "bg-green-50 text-green-600",
-  },
-  {
-    label: "Entrevistas pendientes",
-    value: "—",
-    icon: Bell,
-    color: "bg-amber-50 text-amber-600",
-  },
-  {
-    label: "Perfil completado",
-    value: "—",
-    icon: GraduationCap,
-    color: "bg-purple-50 text-purple-600",
-  },
-];
+import { Bell, Briefcase, ClipboardList, GraduationCap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+
+// Fetch de cada colección en JSON Server
+const fetchCount = (endpoint: string) =>
+  fetch(`http://localhost:3001/${endpoint}`).then((r) => r.json());
 
 export default function StudentPage() {
+  const { data: offers } = useQuery<unknown[]>({
+    queryKey: ["offers"],
+    queryFn: () => fetchCount("offers"),
+  });
+
+  const { data: applications } = useQuery<unknown[]>({
+    queryKey: ["applications"],
+    queryFn: () => fetchCount("applications"),
+  });
+
+  const { data: interviews } = useQuery<unknown[]>({
+    queryKey: ["interviews"],
+    queryFn: () => fetchCount("interviews"),
+  });
+
+  const stats = [
+    {
+      label: "Ofertas disponibles",
+      value: offers?.length ?? "—",
+      icon: Briefcase,
+      color: "bg-blue-50 text-blue-600",
+    },
+    {
+      label: "Mis postulaciones",
+      value: applications?.length ?? "—",
+      icon: ClipboardList,
+      color: "bg-green-50 text-green-600",
+    },
+    {
+      label: "Entrevistas pendientes",
+      value: interviews?.length ?? "—",
+      icon: Bell,
+      color: "bg-amber-50 text-amber-600",
+    },
+    {
+      label: "Perfil completado",
+      value: "—",
+      icon: GraduationCap,
+      color: "bg-purple-50 text-purple-600",
+    },
+  ];
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-1">Mi Dashboard</h1>

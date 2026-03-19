@@ -28,7 +28,7 @@ export function Sidebar({ role }: SicebarProps) {
     <aside className="flex flex-col w-64 min-h-screen bg-ucb-blue text-white shrink-0">
       {/* Logo Imagen */}
       <div className="flex items-center gap-3 px-6 py-4">
-        <Image src="/2.png" alt="UCB Logo" className="w-full h-full" />
+        <Image src="/2.png" alt="UCB Logo" className="w-full h-full" width={100} height={100} />
       </div>
 
       {/* Role label */}
@@ -45,11 +45,10 @@ export function Sidebar({ role }: SicebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
                   ? "bg-ucb-yellow text-ucb-blue"
                   : "text-white/80 hover:bg-white/10 hover:text-white"
-              }`}
+                }`}
             >
               <Icon size={18} strokeWidth={1.75} />
               {item.label}

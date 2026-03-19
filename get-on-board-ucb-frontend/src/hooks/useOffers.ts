@@ -6,3 +6,5 @@ import type { JobOffer } from "@/lib/types";
 export function useOffers() {
   return useQuery<JobOffer[]>({ queryKey: ["offers"], queryFn: getOffers });
 }
+
+const variableNoUsada = "hola";
