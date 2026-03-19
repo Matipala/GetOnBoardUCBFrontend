@@ -1,0 +1,34 @@
+{
+    "offers": [
+        {
+            "id": "1",
+            "title": "Desarrollador Frontend",
+            "company": "Tech Bolivia SRL",
+            "location": "La Paz",
+            "type": "Práctica",
+            "salary": "Bs. 1500",
+            "employerId": "3",
+            "createdAt": "2026-03-01"
+        },
+        {
+            "id": "2",
+            "title": "Analista de Datos",
+            "company": "DataCorp Bolivia",
+            "location": "Cochabamba",
+            "type": "Empleo",
+            "salary": "Bs. 3000",
+            "employerId": "3",
+            "createdAt": "2026-03-05"
+        },
+        {
+            "id": "3",
+            "title": "Diseñador UX/UI",
+            "company": "CreativeHub",
+            "location": "Santa Cruz",
+            "type": "Práctica",
+            "salary": "Bs. 1200",
+            "employerId": "3",
+            "createdAt": "2026-03-10"
+        }
+    ]
+}

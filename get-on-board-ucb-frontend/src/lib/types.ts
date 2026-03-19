@@ -14,3 +14,15 @@ export interface NavItem {
     href: string;
     icon: LucideIcon;
 }
+
+export interface JobOffer {
+    id: string;
+    title: string;
+    company: string;
+    location: string;
+    type: "Practica" | "Empleo";
+    salary: string;
+    employerId: string;
+    createdAt: string;
+
+}
