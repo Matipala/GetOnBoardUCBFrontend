@@ -9,10 +9,10 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-
 export const metadata: Metadata = {
   title: "GetOnBoard UCB",
-  description: "Plataforma de prácticas y empleo de la Universidad Católica Boliviana",
+  description:
+    "Plataforma de prácticas y empleo de la Universidad Católica Boliviana",
 };
 
 export default function RootLayout({
@@ -22,13 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} antialiased`}>
         <AuthProvider>
-          <QueryProvider>
-            {children}
-          </QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </AuthProvider>
       </body>
     </html>

@@ -4,5 +4,5 @@ import type { JobOffer } from "@/lib/types";
 
 //hook para obtener lista de ofertas
 export function useOffers() {
-    return useQuery<JobOffer[]>({ queryKey: ["offers"], queryFn: getOffers });
+  return useQuery<JobOffer[]>({ queryKey: ["offers"], queryFn: getOffers });
 }

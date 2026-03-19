@@ -5,13 +5,12 @@ import { deleteOffer } from "@/lib/api";
 // el mutation es para operaciones de modifican datos
 
 export function useDeleteOffer() {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-
-    return useMutation({
-        mutationFn: deleteOffer,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["offers"] });
-        },
-    });
+  return useMutation({
+    mutationFn: deleteOffer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["offers"] });
+    },
+  });
 }
