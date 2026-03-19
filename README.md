@@ -60,4 +60,9 @@ Seguimos el modelo de ramas de **GitHub Flow**:
    ```bash
    npm run lint
 
+6. **Ya configurado se agrego en el packeage.json para no escribir tanto**
+
+   ```bash
+   npm run lint:fix
+   ```
 ---
