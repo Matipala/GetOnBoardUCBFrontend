@@ -1,13 +1,56 @@
 "use client";
 
-import { Briefcase, MapPin, Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { CreateOfferForm } from "@/components/offers/CreateOfferForm";
+import { OfferCard } from "@/components/offers/OfferCard";
+import { OfferDetails } from "@/components/offers/OfferDetails";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { useDeleteOffer } from "@/hooks/useDeleteOffer";
 import { useOffers } from "@/hooks/useOffers";
+import type { JobOffer } from "@/lib/types";
 
 export default function EmployerOffersPage() {
-  const { data: offers, isLoading, error } = useOffers();
+  const { data: offers, isLoading, error, refetch } = useOffers();
   const deleteMutation = useDeleteOffer();
+
+  const [showForm, setShowForm] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState<JobOffer | null>(null);
+  const [offerToDelete, setOfferToDelete] = useState<string | null>(null);
+
+  if (showForm) {
+    return (
+      <div className="max-w-2xl mx-auto py-2">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Crear Nueva Oferta
+          </h1>
+          <p className="text-gray-500 text-sm mt-1">
+            Llena los detalles para publicar una nueva oportunidad
+          </p>
+        </div>
+        <CreateOfferForm
+          onCancel={() => setShowForm(false)}
+          onSuccess={() => {
+            setShowForm(false);
+            refetch();
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (selectedOffer) {
+    return (
+      <div className="max-w-3xl mx-auto py-2">
+        <OfferDetails
+          offer={selectedOffer}
+          onBack={() => setSelectedOffer(null)}
+        />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -28,56 +71,59 @@ export default function EmployerOffersPage() {
         <p className="text-red-500 font-semibold">
           Error al cargar las ofertas
         </p>
-        <p className="text-gray-400 text-sm">{error.message}</p>
+        <p className="text-gray-400 text-sm">{error?.message}</p>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Mis Ofertas</h1>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-2xl font-bold text-gray-900">Mis Ofertas</h1>
+        <button
+          type="button"
+          onClick={() => setShowForm(true)}
+          className="bg-blue-950 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-900 transition flex items-center gap-2"
+        >
+          <Plus size={16} /> Nueva Oferta
+        </button>
+      </div>
       <p className="text-gray-500 text-sm mb-6">
-        {offers?.length} oferta(s) publicada(s)
+        {offers?.length || 0} oferta(s) publicada(s)
       </p>
 
+      {/* Lista renderizando el componente OfferCard */}
       <div className="grid gap-4">
-        {offers?.map((offer) => (
-          <div
+        {offers?.map((offer: JobOffer) => (
+          <OfferCard
             key={offer.id}
-            className="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-between"
-          >
-            <div>
-              <h2 className="font-semibold text-gray-900 mb-1">
-                {offer.title}
-              </h2>
-              <p className="text-sm text-gray-500 flex items-center gap-1">
-                <Briefcase size={14} /> {offer.company}
-              </p>
-              <p className="text-sm text-gray-500 flex items-center gap-1">
-                <MapPin size={14} /> {offer.location}
-              </p>
-            </div>
-
-            {/* Botón eliminar — deshabilitado mientras ejecuta el DELETE */}
-            <button
-              type="button"
-              onClick={() => deleteMutation.mutate(offer.id)}
-              disabled={deleteMutation.isPending}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors text-sm font-medium disabled:opacity-50"
-            >
-              <Trash2 size={16} />
-              {deleteMutation.isPending ? "Eliminando..." : "Eliminar"}
-            </button>
-          </div>
+            offer={offer}
+            isDeleting={deleteMutation.isPending}
+            onDelete={(id) => setOfferToDelete(id)}
+            onViewDetails={(off) => setSelectedOffer(off)}
+          />
         ))}
       </div>
 
-      {/* Mensaje de error de la mutación */}
       {deleteMutation.isError && (
         <p className="text-red-500 text-sm mt-4">
-          Error al eliminar: {deleteMutation.error.message}
+          Error al eliminar: {deleteMutation.error?.message}
         </p>
       )}
+      <ConfirmModal
+        isOpen={offerToDelete !== null}
+        title="Eliminar oferta"
+        message="¿Estás seguro de que deseas eliminar esta oferta de trabajo? Esta acción es permanente y no podrás recuperar la información."
+        onCancel={() => setOfferToDelete(null)}
+        isLoading={deleteMutation.isPending}
+        onConfirm={() => {
+          if (offerToDelete) {
+            deleteMutation.mutate(offerToDelete, {
+              onSuccess: () => setOfferToDelete(null),
+            });
+          }
+        }}
+      />
     </div>
   );
 }

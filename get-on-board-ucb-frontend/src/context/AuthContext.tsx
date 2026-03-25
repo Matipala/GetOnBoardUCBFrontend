@@ -56,52 +56,9 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-//credenciales de prueba (Esto tengo que reemplazar cuando cree mi backend)
-
-const MOCK_USERS: Record<string, { password: string; user: User }> = {
-  "admin@ucb.edu.bo": {
-    password: "admin123",
-    user: {
-      id: "1",
-      name: "Administrador UCB",
-      email: "admin@ucb.edu.bo",
-      role: "admin",
-    },
-  },
-  "coord@ucb.edu.bo": {
-    password: "coord123",
-    user: {
-      id: "2",
-      name: "Coordinador UCB",
-      email: "coord@ucb.edu.bo",
-      role: "coordinator",
-    },
-  },
-  "employer@ucb.edu.bo": {
-    password: "employer123",
-    user: {
-      id: "3",
-      name: "Empresa Demo",
-      email: "employer@ucb.edu.bo",
-      role: "employer",
-    },
-  },
-  "student@ucb.edu.bo": {
-    password: "student123",
-    user: {
-      id: "4",
-      name: "Estudiante Demo",
-      email: "student@ucb.edu.bo",
-      role: "student",
-    },
-  },
-};
-
-//el provider envuelve la app y provee el contexto
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  //al cargar la app revisa si hay una sesion guarda en el localstorage
   useEffect(() => {
     const savedUser = localStorage.getItem("auth_user");
     if (savedUser) {
@@ -109,31 +66,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  //funcion de login (esto igual tengo que reemplazar con fetch real de mi backend
+  //funcion de login conectada al backend
   const login = async (email: string, password: string): Promise<void> => {
     dispatch({ type: "LOGIN_START" });
-    // Simular delay de red (500ms)
-    await new Promise((res) => setTimeout(res, 500));
-    const found = MOCK_USERS[email.toLowerCase()];
-    if (!found || found.password !== password) {
+    try {
+      const reponse = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!reponse.ok) {
+        throw new Error("Credenciales invalidas");
+      }
+      const found = await reponse.json();
+      localStorage.setItem("auth_user", JSON.stringify(found.user));
+
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
+      document.cookie = `auth-token=${found.user.role}; path=/`;
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
+      document.cookie = `access_token=${found.access_token}; path=/`;
+      dispatch({ type: "LOGIN_SUCCESS", payload: found.user });
+    } catch (err) {
+      const error = err as Error;
       dispatch({
         type: "LOGIN_ERROR",
-        payload: "Correo o contraseña incorrectos",
+        payload: error.message || "error al conectar con el servidor",
       });
-      return;
     }
-
-    localStorage.setItem("auth_user", JSON.stringify(found.user));
-    // Guardar cookie para que el middleware de Next.js pueda leerla
-    // biome-ignore lint/suspicious/noDocumentCookie: el middleware Edge Runtime no soporta Cookie Store API
-    document.cookie = `auth-token=${found.user.role}; path=/`;
-    dispatch({ type: "LOGIN_SUCCESS", payload: found.user });
   };
-  // Función de logout
+
   const logout = () => {
     localStorage.removeItem("auth_user");
-    // Borrar la cookie
-    // biome-ignore lint/suspicious/noDocumentCookie: el middleware Edge Runtime no soporta Cookie Store API
+    // biome-ignore lint/suspicious/noDocumentCookie: auth
     document.cookie =
       "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     dispatch({ type: "LOGOUT" });

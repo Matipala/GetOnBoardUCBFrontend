@@ -7,12 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": [
-      "**",
-      "!.next",
-      "!dist",
-      "!build"
-    ]
+    "includes": ["**", "!.next", "!dist", "!build"]
   },
   "formatter": {
     "enabled": true,
