@@ -26,7 +26,8 @@ export function useCreateOffer() {
         tittle: offerData.title,
         company: offerData.company,
         location: offerData.location,
-        salary: Number(offerData.salary) || 0,
+        type: offerData.type,
+        salary: offerData.salary,
         employerId: employerId,
       };
 
