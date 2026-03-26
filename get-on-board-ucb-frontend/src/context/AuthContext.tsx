@@ -100,8 +100,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      const user = state.user;
       await fetch(`${BASE_URL}/auth/logout`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: user?.email }),
       });
     } catch (err) {
       console.error("Error al cerrar sesión en el servidor:", err);
