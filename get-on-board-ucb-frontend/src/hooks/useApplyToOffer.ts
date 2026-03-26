@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BASE_URL } from "@/lib/api";
 
 interface ApplyParams {
   offerId: number;
@@ -16,7 +17,7 @@ export function useApplyToOffer() {
       formData.append("studentId", studentId);
       formData.append("cv", cvFile);
 
-      const response = await fetch("http://localhost:3000/applications", {
+      const response = await fetch(`${BASE_URL}/applications`, {
         method: "POST",
         body: formData,
       });
