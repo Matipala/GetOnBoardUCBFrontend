@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, type ReactNode, useEffect, useReducer } from "react";
+import { BASE_URL } from "@/lib/api";
 import type { User } from "@/lib/types";
 
 // tipos de estado de autenticacion
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<void> => {
     dispatch({ type: "LOGIN_START" });
     try {
-      const reponse = await fetch("http://localhost:3000/auth/login", {
+      const reponse = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -97,12 +98,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("auth_user");
-    // biome-ignore lint/suspicious/noDocumentCookie: auth
-    document.cookie =
-      "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    dispatch({ type: "LOGOUT" });
+  const logout = async () => {
+    try {
+      await fetch(`${BASE_URL}/auth/logout`, {
+        method: "POST",
+      });
+    } catch (err) {
+      console.error("Error al cerrar sesión en el servidor:", err);
+    } finally {
+      localStorage.removeItem("auth_user");
+      document.cookie =
+        "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie =
+        "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      dispatch({ type: "LOGOUT" });
+    }
   };
   return (
     <AuthContext.Provider value={{ ...state, login, logout }}>

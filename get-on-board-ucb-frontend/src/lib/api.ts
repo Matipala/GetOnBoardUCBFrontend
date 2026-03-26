@@ -1,4 +1,5 @@
-const BASE_URL = "http://localhost:3000";
+export const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 // Función auxiliar para obtener el token de las cookies
 const getDefaultHeaders = (): Record<string, string> => {

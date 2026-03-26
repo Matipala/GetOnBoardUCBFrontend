@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BASE_URL } from "@/lib/api";
 import type { JobOffer } from "@/lib/types";
 
 export function useCreateOffer() {
@@ -31,7 +32,7 @@ export function useCreateOffer() {
         employerId: employerId,
       };
 
-      const response = await fetch("http://localhost:3000/offers", {
+      const response = await fetch(`${BASE_URL}/offers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

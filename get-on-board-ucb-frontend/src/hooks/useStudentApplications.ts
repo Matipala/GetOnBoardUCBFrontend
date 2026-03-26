@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "@/lib/api";
 
 import type { JobOffer } from "@/lib/types";
 
@@ -18,7 +19,7 @@ export function useStudentApplications(studentId: string | undefined) {
     queryFn: async () => {
       if (!studentId) return [];
       const response = await fetch(
-        `http://localhost:3000/applications/student/${studentId}`,
+        `${BASE_URL}/applications/student/${studentId}`,
       );
       if (!response.ok) throw new Error("Error al cargar tus postulaciones");
       return response.json();
