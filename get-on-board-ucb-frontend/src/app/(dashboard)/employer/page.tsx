@@ -2,9 +2,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, ClipboardList, Users } from "lucide-react";
+import { BASE_URL } from "@/lib/api";
 
 const fetchCount = (endpoint: string) =>
-  fetch(`http://localhost:3001/${endpoint}`).then((r) => r.json());
+  fetch(`${BASE_URL}/${endpoint}`).then((r) => r.json());
 
 export default function EmployerPage() {
   const { data: offers } = useQuery<unknown[]>({
