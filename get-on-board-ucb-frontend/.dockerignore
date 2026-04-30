@@ -5,4 +5,4 @@ coverage
 .gitignore
 npm-debug.log
 Dockerfile
-.env
+.env*

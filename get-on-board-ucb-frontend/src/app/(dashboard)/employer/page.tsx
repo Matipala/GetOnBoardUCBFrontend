@@ -2,20 +2,36 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, ClipboardList, Users } from "lucide-react";
-import { BASE_URL } from "@/lib/api";
+import { buildUrl } from "@/lib/api";
 
-const fetchCount = (endpoint: string) =>
-  fetch(`${BASE_URL}/${endpoint}`).then((r) => r.json());
+interface Offer {
+  id: string;
+  title: string;
+}
+
+interface Application {
+  id: string;
+  offerId: string;
+  status: string;
+}
+
+const fetchCount = async (endpoint: string): Promise<unknown[]> => {
+  const response = await fetch(buildUrl(endpoint));
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
+  }
+  return response.json();
+};
 
 export default function EmployerPage() {
-  const { data: offers } = useQuery<unknown[]>({
+  const { data: offers } = useQuery<Offer[]>({
     queryKey: ["offers"],
-    queryFn: () => fetchCount("offers"),
+    queryFn: () => fetchCount("offers") as Promise<Offer[]>,
   });
 
-  const { data: applications } = useQuery<unknown[]>({
+  const { data: applications } = useQuery<Application[]>({
     queryKey: ["applications"],
-    queryFn: () => fetchCount("applications"),
+    queryFn: () => fetchCount("applications") as Promise<Application[]>,
   });
 
   const stats = [

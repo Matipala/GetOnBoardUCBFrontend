@@ -1,6 +1,17 @@
 export const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
+/**
+ * Construye una URL sin dobles barras (//), manejando correctamente la barra final
+ * @param endpoint - El endpoint a consultar
+ * @returns URL correctamente formada
+ */
+export const buildUrl = (endpoint: string): string => {
+  const baseWithoutTrailingSlash = BASE_URL.replace(/\/$/, "");
+  const endpointWithoutLeadingSlash = endpoint.replace(/^\//, "");
+  return `${baseWithoutTrailingSlash}/${endpointWithoutLeadingSlash}`;
+};
+
 // Función auxiliar para obtener el token de las cookies
 const getDefaultHeaders = (): Record<string, string> => {
   if (typeof document === "undefined") return {};
