@@ -18,10 +18,11 @@ export default function AdminSettingsPage() {
   }, [user]);
 
   const mutation = useMutation({
-    mutationFn: () =>
-      updateUser(user?.id, { name: name.trim(), email: email.trim() }),
+    mutationFn: () => {
+      if (!user?.id) throw new Error("ID de usuario no encontrado");
+      return updateUser(user.id, { name: name.trim(), email: email.trim() });
+    },
     onSuccess: (updated) => {
-      // Actualiza el estado global en tiempo real: navbar, avatar, etc.
       updateUserContext({ name: updated.name, email: updated.email });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -99,7 +100,9 @@ export default function AdminSettingsPage() {
 
         {mutation.isError && (
           <p className="text-red-600 text-sm font-medium">
-            {(mutation.error as Error).message}
+            {mutation.error instanceof Error
+              ? mutation.error.message
+              : "Error al actualizar"}
           </p>
         )}
 

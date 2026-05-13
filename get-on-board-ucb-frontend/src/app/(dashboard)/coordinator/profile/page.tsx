@@ -14,14 +14,16 @@ export default function CoordinatorProfilePage() {
 
   useEffect(() => {
     if (user) {
-      setName(user.name);
-      setEmail(user.email);
+      setName(user.name ?? "");
+      setEmail(user.email ?? "");
     }
   }, [user]);
 
   const updateMutation = useMutation({
-    mutationFn: (data: { name: string; email: string }) =>
-      updateUser(user?.id, data),
+    mutationFn: (data: { name: string; email: string }) => {
+      if (!user?.id) throw new Error("ID de usuario no encontrado");
+      return updateUser(user.id, data);
+    },
     onSuccess: () => {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -123,7 +125,9 @@ export default function CoordinatorProfilePage() {
 
         {updateMutation.isError && (
           <p className="text-red-600 text-sm font-medium">
-            {updateMutation.error?.message}
+            {updateMutation.error instanceof Error
+              ? updateMutation.error.message
+              : "Error al actualizar"}
           </p>
         )}
 
