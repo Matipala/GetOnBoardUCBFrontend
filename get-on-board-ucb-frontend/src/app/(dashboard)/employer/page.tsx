@@ -2,20 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, ClipboardList, Users } from "lucide-react";
-
-const fetchCount = (endpoint: string) =>
-  fetch(`http://localhost:3001/${endpoint}`).then((r) => r.json());
+import { getMyOffers } from "@/lib/api";
 
 export default function EmployerPage() {
   const { data: offers } = useQuery<unknown[]>({
-    queryKey: ["offers"],
-    queryFn: () => fetchCount("offers"),
+    queryKey: ["employer-offers-count"],
+    queryFn: getMyOffers,
   });
 
-  const { data: applications } = useQuery<unknown[]>({
-    queryKey: ["applications"],
-    queryFn: () => fetchCount("applications"),
-  });
+  const applications: unknown[] = [];
 
   const stats = [
     {

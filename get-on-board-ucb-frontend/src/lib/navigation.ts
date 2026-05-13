@@ -1,14 +1,10 @@
 import {
   BarChart3,
-  Bell,
-  BookOpen,
   Briefcase,
   Building2,
   ClipboardList,
-  FileText,
   GraduationCap,
   LayoutDashboard,
-  Settings,
   Users,
 } from "lucide-react";
 
@@ -18,11 +14,9 @@ export const navItems: Record<UserRole, NavItem[]> = {
   admin: [
     { label: "Inicio", href: "/admin", icon: LayoutDashboard },
     { label: "Usuarios", href: "/admin/users", icon: Users },
-    { label: "Empleadores", href: "/admin/employers", icon: Building2 },
-    { label: "Estudiantes", href: "/admin/students", icon: GraduationCap },
     { label: "Ofertas", href: "/admin/offers", icon: Briefcase },
-    { label: "Reportes", href: "/admin/reports", icon: BarChart3 },
-    { label: "Configuración", href: "/admin/settings", icon: Settings },
+    { label: "Estadísticas", href: "/admin/stats", icon: BarChart3 },
+    { label: "Mi Perfil", href: "/admin/settings", icon: Users },
   ],
   coordinator: [
     { label: "Inicio", href: "/coordinator", icon: LayoutDashboard },
@@ -32,9 +26,7 @@ export const navItems: Record<UserRole, NavItem[]> = {
       icon: GraduationCap,
     },
     { label: "Ofertas", href: "/coordinator/offers", icon: Briefcase },
-    { label: "Reportes", href: "/coordinator/reports", icon: BarChart3 },
-    { label: "Carreras", href: "/coordinator/careers", icon: BookOpen },
-    { label: "Documentos", href: "/coordinator/documents", icon: FileText },
+    { label: "Mi Perfil", href: "/coordinator/profile", icon: Users },
   ],
   employer: [
     { label: "Inicio", href: "/employer", icon: LayoutDashboard },
@@ -55,8 +47,7 @@ export const navItems: Record<UserRole, NavItem[]> = {
       href: "/student/applications",
       icon: ClipboardList,
     },
-    { label: "Mi Perfil", href: "/student/profile", icon: GraduationCap },
-    { label: "Notificaciones", href: "/student/notifications", icon: Bell },
+    { label: "Mi Perfil", href: "/student/profile", icon: Users },
   ],
 };
 

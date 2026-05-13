@@ -8,16 +8,16 @@ import { OfferDetails } from "@/components/offers/OfferDetails";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { useDeleteOffer } from "@/hooks/useDeleteOffer";
-import { useOffers } from "@/hooks/useOffers";
+import { useMyOffers } from "@/hooks/useMyOffers";
 import type { JobOffer } from "@/lib/types";
 
 export default function EmployerOffersPage() {
-  const { data: offers, isLoading, error, refetch } = useOffers();
+  const { data: offers, isLoading, error, refetch } = useMyOffers();
   const deleteMutation = useDeleteOffer();
 
   const [showForm, setShowForm] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<JobOffer | null>(null);
-  const [offerToDelete, setOfferToDelete] = useState<string | null>(null);
+  const [offerToDelete, setOfferToDelete] = useState<number | null>(null);
 
   if (showForm) {
     return (
@@ -99,7 +99,7 @@ export default function EmployerOffersPage() {
             key={offer.id}
             offer={offer}
             isDeleting={deleteMutation.isPending}
-            onDelete={(id) => setOfferToDelete(id)}
+            onDelete={(id) => setOfferToDelete(Number(id))}
             onViewDetails={(off) => setSelectedOffer(off)}
           />
         ))}

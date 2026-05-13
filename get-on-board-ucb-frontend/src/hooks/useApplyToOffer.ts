@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BASE_URL } from "@/lib/api";
+import { applyToOffer } from "@/lib/api";
 
 interface ApplyParams {
   offerId: number;
@@ -11,25 +11,13 @@ export function useApplyToOffer() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({ offerId, studentId, cvFile }: ApplyParams) => {
-      const formData = new FormData();
-      formData.append("offerId", offerId.toString());
-      formData.append("studentId", studentId);
-      formData.append("cv", cvFile);
-
-      const response = await fetch(`${BASE_URL}/applications`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Error al enviar la postulación");
-      }
-
-      return response.json();
+    mutationFn: async ({ offerId, cvFile }: ApplyParams) => {
+      return applyToOffer(offerId, cvFile);
     },
     onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-applications"],
+      });
       queryClient.invalidateQueries({
         queryKey: ["student-applications", variables.studentId],
       });

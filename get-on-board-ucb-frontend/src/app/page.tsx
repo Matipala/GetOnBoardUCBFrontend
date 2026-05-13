@@ -49,13 +49,13 @@ export default function LandingPage() {
             Comenzar ahora <ArrowRight size={18} />
           </Link>
           <Link
-            href="/student/offers"
+            href="/login"
             className="bg-blue-950 border-blue-950 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-950 transition-colors"
           >
             Ver ofertas
           </Link>
           <Link
-            href="/employer/offers"
+            href="/login"
             className="bg-blue-950 border-blue-950 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-950 transition-colors"
           >
             Ver ofertas

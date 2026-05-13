@@ -2,25 +2,21 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Bell, Briefcase, ClipboardList, GraduationCap } from "lucide-react";
-
-const fetchCount = (endpoint: string) =>
-  fetch(`http://localhost:3001/${endpoint}`).then((r) => r.json());
+import { getMyApplications, getOffers } from "@/lib/api";
 
 export default function StudentPage() {
   const { data: offers } = useQuery<unknown[]>({
     queryKey: ["offers"],
-    queryFn: () => fetchCount("offers"),
+    queryFn: getOffers,
   });
 
   const { data: applications } = useQuery<unknown[]>({
-    queryKey: ["applications"],
-    queryFn: () => fetchCount("applications"),
+    queryKey: ["my-applications-count"],
+    queryFn: getMyApplications,
   });
 
-  const { data: interviews } = useQuery<unknown[]>({
-    queryKey: ["interviews"],
-    queryFn: () => fetchCount("interviews"),
-  });
+  // Entrevistas aún no disponibles en el backend
+  const interviews: unknown[] = [];
 
   const stats = [
     {

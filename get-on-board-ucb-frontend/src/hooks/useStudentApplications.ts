@@ -1,28 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
-import { BASE_URL } from "@/lib/api";
+import { getMyApplications } from "@/lib/api";
+import type { Application } from "@/lib/types";
 
-import type { JobOffer } from "@/lib/types";
-
-interface ApplicationWithOffer {
-  id: number;
-  studentId: string;
-  cvUrl: string;
-  status: "PENDING" | "IN_REVIEW" | "ACCEPTED" | "REJECTED";
-  createdAt: string;
-  offerId: number;
-  offer: JobOffer; // Incluimos la data de la oferta
+// Usa el endpoint /student/mine que toma el studentId del JWT
+// No necesita recibir el studentId como parámetro
+export function useMyApplications() {
+  return useQuery<Application[]>({
+    queryKey: ["my-applications"],
+    queryFn: getMyApplications,
+  });
 }
 
+// Mantiene compatibilidad si algún componente usa useStudentApplications(id)
+// (para admin/coordinator que necesitan ver aplicaciones de un estudiante específico)
 export function useStudentApplications(studentId: string | undefined) {
-  return useQuery<ApplicationWithOffer[]>({
+  return useQuery<Application[]>({
     queryKey: ["student-applications", studentId],
     queryFn: async () => {
       if (!studentId) return [];
-      const response = await fetch(
-        `${BASE_URL}/applications/student/${studentId}`,
-      );
-      if (!response.ok) throw new Error("Error al cargar tus postulaciones");
-      return response.json();
+      const { getApplicationsByStudent } = await import("@/lib/api");
+      return getApplicationsByStudent(studentId);
     },
     enabled: !!studentId,
   });

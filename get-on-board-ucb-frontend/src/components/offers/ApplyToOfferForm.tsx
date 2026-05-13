@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle, FileText, Plus } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/UseAuth";
 import { useApplyToOffer } from "@/hooks/useApplyToOffer";
-import { useStudentApplications } from "@/hooks/useStudentApplications";
+import { useMyApplications } from "@/hooks/useStudentApplications";
 
 interface ApplyToOfferFormProps {
   offerId: string | number;
@@ -24,7 +24,7 @@ export function ApplyToOfferForm({
   const { user } = useAuth();
 
   const { data: allApplications, isLoading: isLoadingApps } =
-    useStudentApplications(user?.id);
+    useMyApplications();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
