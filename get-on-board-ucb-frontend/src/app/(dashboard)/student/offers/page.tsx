@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Briefcase, DollarSign, Eye, MapPin } from "lucide-react";
 import { useState } from "react";
 import { ApplyToOfferForm } from "@/components/offers/ApplyToOfferForm";
@@ -7,13 +8,35 @@ import { OfferDetails } from "@/components/offers/OfferDetails";
 import { Modal } from "@/components/ui/Modal";
 import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { useAuth } from "@/hooks/UseAuth";
-import { useOffers } from "@/hooks/useOffers";
+import { getOffersByCareer } from "@/lib/api";
 import type { JobOffer } from "@/lib/types";
 
 export default function StudentOffersPage() {
-  const { data: offers, isLoading, error } = useOffers();
   const { user } = useAuth();
+  const career = user?.career ?? "";
   const [selectedOffer, setSelectedOffer] = useState<JobOffer | null>(null);
+
+  const {
+    data: offers,
+    isLoading,
+    error,
+  } = useQuery<JobOffer[]>({
+    queryKey: ["offers-career", career],
+    queryFn: () => getOffersByCareer(career),
+    enabled: !!career,
+  });
+
+  if (!career) {
+    return (
+      <div className="p-8 text-center">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-8 inline-block">
+          <p className="text-yellow-700 font-semibold">
+            Tu cuenta no tiene una carrera asignada. Contacta al administrador.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -55,10 +78,7 @@ export default function StudentOffersPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {offers?.map((offer) => {
-          const title =
-            offer.title ||
-            (offer as unknown as { tittle: string }).tittle ||
-            "Sin Título";
+          const title = offer.title ?? "Sin Título";
 
           return (
             <button
@@ -88,7 +108,7 @@ export default function StudentOffersPage() {
                 </div>
 
                 <div className="space-y-2.5 mb-6">
-                  <p className="text-sm text-gray-600 flex items-center gap-2 font-medium">
+                  <div className="text-sm text-gray-600 flex items-center gap-2 font-medium">
                     <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors">
                       <Briefcase
                         size={14}
@@ -96,8 +116,8 @@ export default function StudentOffersPage() {
                       />
                     </div>
                     {offer.company}
-                  </p>
-                  <p className="text-sm text-gray-500 flex items-center gap-2">
+                  </div>
+                  <div className="text-sm text-gray-500 flex items-center gap-2">
                     <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors">
                       <MapPin
                         size={14}
@@ -105,8 +125,8 @@ export default function StudentOffersPage() {
                       />
                     </div>
                     {offer.location}
-                  </p>
-                  <p className="text-sm flex items-center gap-2 font-semibold text-gray-700">
+                  </div>
+                  <div className="text-sm flex items-center gap-2 font-semibold text-gray-700">
                     <div className="p-1.5 bg-gray-50 rounded-lg group-hover:bg-green-50 transition-colors">
                       <DollarSign
                         size={14}
@@ -114,7 +134,7 @@ export default function StudentOffersPage() {
                       />
                     </div>
                     {offer.salary ? `$ ${offer.salary}` : "No especificado"}
-                  </p>
+                  </div>
                 </div>
               </div>
 

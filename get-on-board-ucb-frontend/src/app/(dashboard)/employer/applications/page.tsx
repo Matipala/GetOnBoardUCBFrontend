@@ -10,17 +10,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { StatusPicker } from "@/components/applications/StatusPicker";
-import { useAuth } from "@/hooks/UseAuth";
+import { useMyOffers } from "@/hooks/useMyOffers";
 import { useOfferApplications } from "@/hooks/useOfferApplications";
-import { useOffers } from "@/hooks/useOffers";
 import { useUpdateApplicationStatus } from "@/hooks/useUpdateApplicationStatus";
 
 export default function EmployerApplicationsPage() {
-  const { user } = useAuth();
-  const { data: offers } = useOffers();
+  const { data: myOffers } = useMyOffers();
   const [selectedOfferId, setSelectedOfferId] = useState<number | null>(null);
-
-  const myOffers = offers?.filter((o) => o.employerId === user?.id) || [];
 
   const { data: applications, isLoading } = useOfferApplications(
     selectedOfferId || 0,
@@ -44,7 +40,7 @@ export default function EmployerApplicationsPage() {
         </div>
         <div>
           <h1 className="text-3xl font-black text-gray-900 leading-tight">
-            Postulaciones Recibidas
+            Postulaciones
           </h1>
           <p className="text-gray-500 font-medium tracking-tight">
             Gestiona y revisa a los candidatos que aplicaron a tus vacantes
@@ -61,13 +57,13 @@ export default function EmployerApplicationsPage() {
               Activas
             </h2>
             <span className="bg-gray-100 text-gray-500 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">
-              {myOffers.length}
+              {myOffers?.length ?? 0}
             </span>
           </div>
 
           <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-            {myOffers.length > 0 ? (
-              myOffers.map((offer) => (
+            {(myOffers?.length ?? 0) > 0 ? (
+              myOffers?.map((offer) => (
                 <button
                   key={offer.id}
                   type="button"
@@ -82,8 +78,7 @@ export default function EmployerApplicationsPage() {
                     <p
                       className={`font-bold truncate text-sm transition-colors ${selectedOfferId === Number(offer.id) ? "text-blue-900" : "text-gray-700"}`}
                     >
-                      {offer.title ||
-                        (offer as unknown as { tittle: string }).tittle}
+                      {offer.title}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none translate-y-px">

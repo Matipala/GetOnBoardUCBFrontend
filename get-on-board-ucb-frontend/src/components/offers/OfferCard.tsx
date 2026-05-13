@@ -5,7 +5,7 @@ import type { JobOffer } from "@/lib/types";
 
 interface OfferCardProps {
   offer: JobOffer;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   isDeleting: boolean;
   onViewDetails: (offer: JobOffer) => void;
 }
@@ -16,16 +16,11 @@ export function OfferCard({
   isDeleting,
   onViewDetails,
 }: OfferCardProps) {
-  const offerTitle =
-    offer.title ||
-    (offer as JobOffer & { tittle?: string }).tittle ||
-    "Sin Título";
-
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-between hover:shadow-md transition">
       <div>
         <h2 className="font-semibold text-gray-900 mb-1 text-lg">
-          {offerTitle}
+          {offer.title ?? "Sin Título"}
         </h2>
         <div className="flex gap-4">
           <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -34,6 +29,11 @@ export function OfferCard({
           <p className="text-sm text-gray-500 flex items-center gap-1">
             <MapPin size={14} /> {offer.location}
           </p>
+          {offer.career && (
+            <p className="text-xs text-ucb-blue font-medium flex items-center gap-1">
+              {offer.career}
+            </p>
+          )}
         </div>
       </div>
 

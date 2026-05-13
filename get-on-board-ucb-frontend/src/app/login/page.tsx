@@ -136,7 +136,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-slate-50 mt-6">
+        <p className="text-center text-xs text-slate-50 mt-3">
           <Link href="/" className="hover:underline">
             ← Volver al inicio
           </Link>

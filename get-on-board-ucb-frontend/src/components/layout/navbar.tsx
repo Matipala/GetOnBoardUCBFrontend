@@ -1,4 +1,10 @@
-import { Bell, User } from "lucide-react";
+"use client";
+
+import { ChevronDown, LogOut, User, User as UserIcon } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/hooks/UseAuth";
 import { roleLabels } from "@/lib/navigation";
 import type { UserRole } from "@/lib/types";
 
@@ -14,9 +20,49 @@ const badgeColors: Record<UserRole, string> = {
   employer: "bg-ucb-yellow text-ucb-blue",
 };
 
-export function Navbar({ role, userName = "Usuario" }: NavbarProps) {
+const getProfileLink = (role: UserRole) => {
+  switch (role) {
+    case "student":
+      return "/student/profile";
+    case "employer":
+      return "/employer/company";
+    case "admin":
+      return "/admin/settings";
+    case "coordinator":
+      return "/coordinator/profile";
+    default:
+      return "/";
+  }
+};
+
+export function Navbar({ role, userName: propUserName }: NavbarProps) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const displayName = user?.name || propUserName || "";
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 relative z-50">
       <div />
       <div className="flex items-center gap-4">
         <span
@@ -24,20 +70,44 @@ export function Navbar({ role, userName = "Usuario" }: NavbarProps) {
         >
           {roleLabels[role]}
         </span>
+        <div className="relative" ref={dropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-2.5 hover:bg-gray-50 p-1.5 rounded-lg transition-colors focus:outline-none"
+          >
+            <div className="w-8 h-8 bg-ucb-blue rounded-full flex items-center justify-center">
+              <User size={15} className="text-white" />
+            </div>
+            <span className="text-sm font-medium text-gray-700">
+              {displayName}
+            </span>
+            <ChevronDown size={14} className="text-gray-500" />
+          </button>
 
-        <button
-          type="button"
-          className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <Bell size={20} strokeWidth={1.75} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-ucb-yellow rounded-full" />
-        </button>
-
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-ucb-blue rounded-full flex items-center justify-center">
-            <User size={15} className="text-white" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">{userName}</span>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1">
+              <Link
+                href={getProfileLink(role)}
+                onClick={() => setIsDropdownOpen(false)}
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                <UserIcon size={16} />
+                Ver perfil
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  handleLogout();
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <LogOut size={16} />
+                Cerrar sesión
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

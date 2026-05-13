@@ -14,13 +14,11 @@ import {
 import { useState } from "react";
 import { OfferDetails } from "@/components/offers/OfferDetails";
 import { Modal } from "@/components/ui/Modal";
-import { useAuth } from "@/hooks/UseAuth";
-import { useStudentApplications } from "@/hooks/useStudentApplications";
+import { useMyApplications } from "@/hooks/useStudentApplications";
 import type { JobOffer } from "@/lib/types";
 
 export default function StudentApplicationsPage() {
-  const { user } = useAuth();
-  const { data: applications, isLoading } = useStudentApplications(user?.id);
+  const { data: applications, isLoading } = useMyApplications();
   const [selectedOffer, setSelectedOffer] = useState<JobOffer | null>(null);
 
   const getStatusInfo = (status: string) => {
@@ -85,10 +83,7 @@ export default function StudentApplicationsPage() {
         <div className="grid gap-6">
           {applications.map((app, index) => {
             const status = getStatusInfo(app.status);
-            const offerTitle =
-              app.offer?.title ||
-              (app.offer as unknown as { tittle: string })?.tittle ||
-              "Sin Título";
+            const offerTitle = app.offer?.title ?? "Sin Título";
             const applicationNumber = applications.length - index; // Número correlativo (el más reciente es el mayor)
 
             return (
@@ -134,7 +129,7 @@ export default function StudentApplicationsPage() {
                 <div className="flex items-center gap-3 shrink-0">
                   <button
                     type="button"
-                    onClick={() => setSelectedOffer(app.offer)}
+                    onClick={() => setSelectedOffer(app.offer ?? null)}
                     className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-blue-950 bg-gray-50 hover:bg-blue-950 hover:text-white rounded-xl transition-all border border-gray-100"
                   >
                     <Eye size={16} />

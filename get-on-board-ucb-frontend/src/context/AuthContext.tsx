@@ -17,6 +17,7 @@ type AuthAction =
   | { type: "LOGIN_START" }
   | { type: "LOGIN_SUCCESS"; payload: User }
   | { type: "LOGIN_ERROR"; payload: string }
+  | { type: "UPDATE_USER"; payload: Partial<User> }
   | { type: "LOGOUT" };
 
 // estado inicial
@@ -37,6 +38,11 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
       return { ...state, isLoading: false, user: action.payload };
     case "LOGIN_ERROR":
       return { ...state, isLoading: false, error: action.payload };
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: state.user ? { ...state.user, ...action.payload } : null,
+      };
     case "LOGOUT":
       return { user: null, isLoading: false, error: null };
     default:
@@ -51,6 +57,7 @@ type AuthContextType = {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUserContext: (data: Partial<User>) => void;
 };
 
 //crear contexto
@@ -88,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       document.cookie = `auth-token=${found.user.role}; path=/`;
       // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
       document.cookie = `access_token=${found.access_token}; path=/`;
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
+      document.cookie = `refresh_token=${found.refresh_token}; path=/`;
       dispatch({ type: "LOGIN_SUCCESS", payload: found.user });
     } catch (err) {
       const error = err as Error;
@@ -112,15 +121,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Error al cerrar sesión en el servidor:", err);
     } finally {
       localStorage.removeItem("auth_user");
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
       document.cookie =
         "auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
       document.cookie =
         "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      // biome-ignore lint/suspicious/noDocumentCookie: auth persistence
+      document.cookie =
+        "refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       dispatch({ type: "LOGOUT" });
     }
   };
+  const updateUserContext = (data: Partial<User>) => {
+    dispatch({ type: "UPDATE_USER", payload: data });
+    const stored = localStorage.getItem("auth_user");
+    if (stored) {
+      localStorage.setItem(
+        "auth_user",
+        JSON.stringify({ ...JSON.parse(stored), ...data }),
+      );
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider
+      value={{ ...state, login, logout, updateUserContext }}
+    >
       {children}
     </AuthContext.Provider>
   );
