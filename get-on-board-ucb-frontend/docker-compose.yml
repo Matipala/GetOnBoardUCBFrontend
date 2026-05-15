@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: getonboard_frontend
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      # Apuntamos al Backend de Docker (puerto 3004) para total independencia
+      - NEXT_PUBLIC_API_URL=http://localhost:3004
+      - PORT=${PORT:-3000}
+    command: npm run dev
