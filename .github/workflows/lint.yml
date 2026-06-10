@@ -1,0 +1,32 @@
+name: Frontend Code Validation
+
+on:
+  push:
+    branches: [ "main", "test" ]
+  pull_request:
+    branches: [ "main", "test" ]
+
+jobs:
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./get-on-board-ucb-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./get-on-board-ucb-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
