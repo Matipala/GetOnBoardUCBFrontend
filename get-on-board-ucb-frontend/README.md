@@ -1,59 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<img width="885" height="183" alt="Colorful Community Logo" src="https://github.com/user-attachments/assets/111053c7-d317-4c8e-950a-4e57a51b3ba0" />
 
-## Getting Started
+# Get On Board UCB - Frontend 
 
-First, run the development server:
+Plataforma de conexión laboral para estudiantes y graduados de la UCB. Enfocada en una experiencia de usuario fluida para la búsqueda de pasantías y vacantes.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Enlaces Públicos
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Aplicación Desplegada (Producción)**: https://getonboarducb.vercel.app/
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** [Next.js](https://nextjs.org/)
+- **Library:** [React](https://reactjs.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Linter & Formatter:** [Biome](https://biomejs.dev/) (Velocidad extrema y orden de clases de Tailwind nativo)
 
-## Learn More
+## Estándares de Desarrollo
 
-To learn more about Next.js, take a look at the following resources:
+Para este repositorio utilizamos **Biome**. 
+> **¿Por qué Biome?** Reemplaza a ESLint y Prettier. Formatea, revisa el código y ordena las clases de Tailwind en milisegundos, permitiendo un desarrollo ágil sin configuraciones pesadas.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## GitHub Flow
+Seguimos el modelo de ramas de **GitHub Flow**:
+1. `main` siempre es producción.
+2. `test` siempre es preview
+3. Crea una rama descriptiva para cada tarea: `feature/nombre-tarea` o `fix/nombre-error`.
+4. Abre un Pull Request para revisión en `test` antes de mergear a `main`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Instalación Local
 
-## Deploy on Vercel
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/Matipala/GetOnBoardUCBFrontend.git
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Instalar dependencias:
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Ejecutar en modo desarrollo:
+   ```bash
+   npm run dev
+   ```
 
-## Docker
+## Comandos de Biome
 
-Este proyecto incluye Docker para levantar el frontend sin instalar dependencias localmente.
+1. Instalar dependencia de Biome:
+   ```bash
+   npm install --save-dev --save-exact @biomejs/biome
+   ```
 
-### Comandos
+2. Si no se creó el archivo Biome.json:
+   ```bash
+   npx @biomejs/biome init
+   ```
 
-```bash
-docker compose up --build
-```
+3. **Antes de hacer un Commit**: Excelente para escanear el código. Detectará variables sin usar o errores, y los arreglará si puede.
+   ```bash
+   npm run check
+   ```
 
-```bash
-docker compose down
-```
+4. **Cuando agregas muchos archivos de golpe**: Recorre todos los archivos en milisegundos y los dejará impecables y estandarizados.
+   ```bash
+   npm run format
+   ```
 
-```bash
-docker compose logs -f frontend
-```
+5. **Para buscar errores ocultos**: Revisará todos los archivos en busca de errores de lógica de React o Next.js.
+   ```bash
+   npm run lint
+   ```
 
-### Variables de entorno
+6. **Comando unificado (ya configurado en package.json)**:
+   ```bash
+   npm run lint:fix
+   ```
 
-- `PORT`: puerto de escucha del contenedor (default 3000)
-- `NEXT_PUBLIC_API_URL`: URL del backend
+## Pipeline CI (GitHub Actions)
+
+El repositorio cuenta con un flujo de trabajo automatizado (`lint.yml`) configurado en GitHub Actions que actúa como guardián de la calidad del código.
+- **¿Qué hace?**: Levanta un entorno aislado, instala dependencias (`npm ci`) y ejecuta `npm run lint` (Biome).
+- **¿Cuándo se ejecuta?**: Automáticamente en cada `push` o `pull request` hacia las ramas `main` o `test`.
+- **Objetivo**: Bloquear la integración de cualquier código que no pase las reglas del linter antes de llegar a producción o al entorno de pruebas.
+
+---
