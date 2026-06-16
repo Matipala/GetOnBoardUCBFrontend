@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: getonboard
+  labels:
+    app: getonboard-frontend
+data:
+  NEXT_PUBLIC_API_URL: "https://api.getonboard-ucb.com"
+  NEXT_TELEMETRY_DISABLED: "1"
