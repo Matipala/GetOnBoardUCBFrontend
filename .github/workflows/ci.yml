@@ -1,0 +1,47 @@
+name: frontend-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: get-on-board-ucb-frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: get-on-board-ucb-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+
+      - name: Security audit (npm)
+        run: npm audit --audit-level=high || true
+
+      - name: Build Docker image
+        run: docker build -t getonboard-frontend:${{ github.sha }} .
+
+      - name: Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: getonboard-frontend:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'

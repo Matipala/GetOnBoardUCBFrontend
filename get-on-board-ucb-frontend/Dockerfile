@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Etapa 2: Build
 FROM node:22-alpine AS builder
@@ -30,7 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder /app/package*.json ./
 
 # Instala solo dependencias necesarias para producción
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
